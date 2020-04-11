@@ -60,7 +60,8 @@ public class SampleController {
 	private OrdersTab ordersTab = new OrdersTab();
 	private Stage serialSettingsStage;
 	private Short [] data = new Short [DATA_SIZE_BYTES];
-	private Alert alertError = new Alert(AlertType.ERROR); 
+	private Alert alertError = new Alert(AlertType.ERROR);
+	private Alert goodMessage = new Alert(AlertType.INFORMATION);
 	private SerialController serialController;
 	
 	@FXML
@@ -257,6 +258,11 @@ public class SampleController {
 							serialController.getSerialPort().closePort();
 						}
 					}
+					Platform.runLater(() -> {
+						goodMessage.setTitle("Все пакеты записаны");
+						goodMessage.setContentText("Все пакеты записаны");
+						goodMessage.show();
+					});
 				}
 			}.start();
 		} catch (Exception e) {
