@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane prefHeight="352.0" prefWidth="378.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SampleController">
+   <center>
+      <TabPane fx:id="mainPane" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+            <Tab fx:id="modbus" text="Modbus">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="16.0" layoutY="28.0" text="Address:" />
+                        <TextField fx:id="modbusAddress" layoutX="82.0" layoutY="23.0" prefHeight="25.0" prefWidth="100.0" />
+                        <CheckBox fx:id="broadcastAddress" layoutX="82.0" layoutY="77.0" mnemonicParsing="false" text="Broadcast" />
+                        <CheckBox fx:id="rewriteEEPROM" layoutX="83.0" layoutY="112.0" mnemonicParsing="false" text="Rewrite EEPROM" />
+                        <ProgressBar fx:id="progress" layoutX="84.0" layoutY="144.0" prefHeight="27.0" prefWidth="200.0" progress="0.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="amplitudes" text="Amplitudes">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="304.0" prefWidth="456.0">
+                     <children>
+                        <TextField fx:id="amp1" layoutX="72.0" layoutY="23.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="16.0" layoutY="28.0" text="f1, дб:" />
+                        <Label layoutX="16.0" layoutY="62.0" text="f2, дб:" />
+                        <TextField fx:id="amp2" layoutX="72.0" layoutY="57.0" prefHeight="25.0" prefWidth="100.0" />
+                        <TextField fx:id="amp3" layoutX="72.0" layoutY="92.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="16.0" layoutY="97.0" text="f3, дб:" />
+                        <Label layoutX="16.0" layoutY="132.0" text="f4, дб:" />
+                        <TextField fx:id="amp4" layoutX="72.0" layoutY="127.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="16.0" layoutY="166.0" text="f5, дб:" />
+                        <TextField fx:id="amp5" layoutX="72.0" layoutY="161.0" prefHeight="25.0" prefWidth="100.0" />
+                        <TextField fx:id="amp6" layoutX="72.0" layoutY="195.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="16.0" layoutY="199.0" text="f6, дб:" />
+                        <Label layoutX="205.0" layoutY="28.0" text="f7, дб:" />
+                        <TextField fx:id="amp7" layoutX="261.0" layoutY="24.0" prefHeight="25.0" prefWidth="100.0" />
+                        <TextField fx:id="amp8" layoutX="262.0" layoutY="57.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="205.0" layoutY="62.0" text="f8, дб:" />
+                        <Label layoutX="205.0" layoutY="97.0" text="f9, дб:" />
+                        <TextField fx:id="amp9" layoutX="263.0" layoutY="92.0" prefHeight="25.0" prefWidth="100.0" />
+                        <TextField fx:id="amp10" layoutX="263.0" layoutY="127.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="205.0" layoutY="132.0" text="f10, дб:" />
+                        <Label layoutX="205.0" layoutY="166.0" text="f11, дб:" />
+                        <TextField fx:id="amp11" layoutX="263.0" layoutY="161.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="205.0" layoutY="199.0" text="f12, дб:" />
+                        <TextField fx:id="amp12" layoutX="263.0" layoutY="195.0" prefHeight="25.0" prefWidth="100.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="orders" text="Orders">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="304.0" prefWidth="456.0">
+                     <children>
+                        <TextField fx:id="ord1" layoutX="72.0" layoutY="23.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="16.0" layoutY="28.0" text="f1, ед:" />
+                        <Label layoutX="16.0" layoutY="62.0" text="f2, ед" />
+                        <TextField fx:id="ord2" layoutX="72.0" layoutY="57.0" prefHeight="25.0" prefWidth="100.0" />
+                        <TextField fx:id="ord3" layoutX="72.0" layoutY="92.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="16.0" layoutY="97.0" text="f3, ед:" />
+                        <Label layoutX="16.0" layoutY="132.0" text="f4, ед:" />
+                        <TextField fx:id="ord4" layoutX="72.0" layoutY="127.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="16.0" layoutY="166.0" text="f5, ед:" />
+                        <TextField fx:id="ord5" layoutX="72.0" layoutY="161.0" prefHeight="25.0" prefWidth="100.0" />
+                        <TextField fx:id="ord6" layoutX="72.0" layoutY="195.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="16.0" layoutY="199.0" text="f6, ед:" />
+                        <Label layoutX="205.0" layoutY="28.0" text="f7, ед:" />
+                        <TextField fx:id="ord7" layoutX="261.0" layoutY="24.0" prefHeight="25.0" prefWidth="100.0" />
+                        <TextField fx:id="ord8" layoutX="262.0" layoutY="57.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="205.0" layoutY="62.0" text="f8, ед:" />
+                        <Label layoutX="205.0" layoutY="97.0" text="f9, ед:" />
+                        <TextField fx:id="ord9" layoutX="263.0" layoutY="92.0" prefHeight="25.0" prefWidth="100.0" />
+                        <TextField fx:id="ord10" layoutX="263.0" layoutY="127.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="205.0" layoutY="132.0" text="f10, ед:" />
+                        <Label layoutX="205.0" layoutY="166.0" text="f11, ед:" />
+                        <TextField fx:id="ord11" layoutX="263.0" layoutY="161.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="205.0" layoutY="199.0" text="f12, ед:" />
+                        <TextField fx:id="ord12" layoutX="263.0" layoutY="195.0" prefHeight="25.0" prefWidth="100.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+          <Tab fx:id="tab1" text="f1">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="270.0" prefWidth="358.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab fx:id="tab2" text="f2">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="378.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+            <Tab fx:id="tab3" text="f3">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="tab4" text="f4">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="tab5" text="f5">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="tab6" text="f6">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="tab7" text="f7">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="tab8" text="f8">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="tab9" text="f9">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="tab10" text="f10">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="tab11" text="f11">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="tab12" text="f12">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </center>
+   <top>
+      <MenuBar prefHeight="29.0" prefWidth="446.0" BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem fx:id="openIni" mnemonicParsing="false" onAction="#handleFileOpen" text="Open" />
+                  <MenuItem fx:id="saveIni" mnemonicParsing="false" onAction="#handleFileSave" text="Save" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Com">
+            <items>
+                  <MenuItem fx:id="openSerialSettings" mnemonicParsing="false" onAction="#handleOpenSerialSettings" text="Settings" />
+              <MenuItem fx:id="writeToController" mnemonicParsing="false" onAction="#handleWriteToController" text="Write" />
+                  <MenuItem fx:id="write2Flash" mnemonicParsing="false" onAction="#handleWriteToFlash" text="Write2Flash" visible="false" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help" visible="false">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>
