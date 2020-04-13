@@ -5,15 +5,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.Optional;
 
 import org.ini4j.Profile.Section;
 import org.ini4j.Wini;
 
 import application.initgui.AmplitudesTab;
 import application.initgui.FreqTableProcessor;
+import application.initgui.FreqValuesRow;
+import application.initgui.FreqsSettingsTableProcessor;
+import application.initgui.FreqsSettingsValuesTab;
 import application.initgui.ModbusTab;
 import application.initgui.OrdersTab;
 import application.initgui.Row;
@@ -45,10 +46,13 @@ public class SampleController {
 	private static final int DATA_SIZE_REGISTERS = DATA_SIZE_BYTES >> 1;
 	private static final byte DATA_SIZE_REGISTERS_ONE_SENDING = 123;
 	private static final byte DATA_SENDINGS_QUANTITY = (byte) (Math.floor(DATA_SIZE_REGISTERS / DATA_SIZE_REGISTERS_ONE_SENDING) + 1);
+	private static final int AMPLITUDES_DATA_OFFSET = 0;
 	private static final int ORDERS_DATA_OFFSET = 36;
 	private static final int COEFFICIENTS_DATA_OFFSET = 48;
 	private static final int COEFFICIENTS_DATA_SIZE = 100;
 	private static final int MODBUS_ADDRESS = 1248;
+	private static final int FREQS_DATA_OFFSET = 1249;
+	private static final int FREQS_DIVIDER = 1261;
 	private static final byte MODBUS_WRITE_FUNCTION = 16;
 	private static final byte MODBUS_BROADCAST_ADDRESS = -1;
 	private static final int MODBUS_REFRESH_FLASH_MEMORY_ADDRESS_0 = 1406;
@@ -58,6 +62,7 @@ public class SampleController {
 	private ModbusTab modbusTab = new ModbusTab();
 	private AmplitudesTab amplitudesTab = new AmplitudesTab();
 	private OrdersTab ordersTab = new OrdersTab();
+	private FreqsSettingsValuesTab freqsSettingsValuesTab = new FreqsSettingsValuesTab();
 	private Stage serialSettingsStage;
 	private Short [] data = new Short [DATA_SIZE_BYTES];
 	private Alert alertError = new Alert(AlertType.ERROR);
@@ -80,6 +85,8 @@ public class SampleController {
 	private CheckBox rewriteEEPROM;
 	@FXML
 	private ProgressBar progress;
+	@FXML
+	private TextField freqDiv;
 	
 	final FileChooser fileChooser = new FileChooser();
 	
@@ -101,13 +108,28 @@ public class SampleController {
 			progress.setProgress(0d);
 		});
 		initData();
+		prepareAmplitudes();
 		prepareOrders();
 		prepareCoefficients();
 		prepareModbus();
+		prepareFreqsSettingsValues();
 		if (rewriteEEPROM.isSelected()) {
 			data [MODBUS_REFRESH_FLASH_MEMORY_ADDRESS_0] = 0x1111;
 			data [MODBUS_REFRESH_FLASH_MEMORY_ADDRESS_1] = 0x2222;
 		}
+	}
+	
+	private void prepareFreqsSettingsValues() {
+		Optional<Tab> tab 
+			= tabs.stream().filter(t -> t.getText().equals(FreqsSettingsTableProcessor.TAB_FREQS_SETTINGS_VALUES_NAME)).findFirst();
+		TableView<FreqValuesRow> table = FreqsSettingsTableProcessor.getTableView(tab.get());
+		ObservableList<FreqValuesRow> rows = table.getItems();
+		FreqValuesRow row = rows.get(0);
+		for (int i=0; i<12; i++) {
+			data[FREQS_DATA_OFFSET + i] = Short.valueOf(row.getByName("f" + (i + 1)));
+		}
+		String value = freqDiv.getText() == null || freqDiv.getText().equals("") ? "1" : freqDiv.getText();
+		data [FREQS_DIVIDER] = Short.valueOf(value);
 	}
 	
 	private List<List<Byte>> data2ModbusSendings() {
@@ -142,11 +164,9 @@ public class SampleController {
 			// установка количества байт
 			sending.set(6, (byte)(sending.size() - 7));
 			int [] crc = CRC16.getCrc(sending);
-			sending.add((byte) crc [1]);
 			sending.add((byte) crc [0]);
-			
-			//sending.stream().forEach(t->System.out.print(String.valueOf(String.format("%02x", t)) + " "));
-			
+			sending.add((byte) crc [1]);
+						
 			sendings.add(sending);
 			index += DATA_SIZE_REGISTERS_ONE_SENDING;
 		}
@@ -205,6 +225,18 @@ public class SampleController {
 		}
 	}
 	
+	private void prepareAmplitudes() throws InvalidData {
+		int index = 0;
+		for (TextField field : Arrays.asList(amp1, amp2, amp3, amp4, amp5, amp6, amp7, amp8, amp9, amp10, amp11, amp12)) {
+			try {
+				data[AMPLITUDES_DATA_OFFSET + index] = Short.valueOf(field.getText());
+			} catch (NumberFormatException e) {
+				throw new InvalidData(String.format("Ошибка в величине амплитуды %s", field.getText()));
+			}
+			index++;
+		}
+	}
+	
 	private void prepareOrders() throws InvalidData {
 		int index = 0;
 		for (TextField field : Arrays.asList(ord1, ord2, ord3, ord4, ord5, ord6, ord7, ord8, ord9, ord10, ord11, ord12)) {
@@ -235,6 +267,7 @@ public class SampleController {
 			new Thread() {
 				@Override
 				public void run() {
+					boolean success = false;
 					try {
 						prepareData();
 						List<List<Byte>> sendings = data2ModbusSendings();
@@ -246,6 +279,7 @@ public class SampleController {
 							final double step = j;
 							Platform.runLater(() -> progress.setProgress(step / sendings.size()));
 						}
+						success = true;
 					} catch (Exception e) {
 						Platform.runLater(() -> {
 							alertError.setTitle("Ошибка при подготовке данных для записи в контроллер");
@@ -258,11 +292,13 @@ public class SampleController {
 							serialController.getSerialPort().closePort();
 						}
 					}
-					Platform.runLater(() -> {
-						goodMessage.setTitle("Все пакеты записаны");
-						goodMessage.setContentText("Все пакеты записаны");
-						goodMessage.show();
-					});
+					if (success) {
+						Platform.runLater(() -> {
+							goodMessage.setTitle("Все пакеты записаны");
+							goodMessage.setContentText("Все пакеты записаны");
+							goodMessage.show();
+						});
+					}
 				}
 			}.start();
 		} catch (Exception e) {
@@ -306,6 +342,9 @@ public class SampleController {
 				if (tab.getText().startsWith("f")) {
 					populateFilterTable(item, tab);
 				}
+				else if (FreqsSettingsTableProcessor.TAB_FREQS_SETTINGS_VALUES_NAME.equals(tab.getText())) {
+					freqsSettingsValuesTab.init(tab, settings, freqDiv);
+				}
 				else if (ModbusTab.MODBUS_TAB_NAME.equals(tab.getText())) {
 					modbusTab.init(tab, settings, modbusAddress);
 				}
@@ -328,6 +367,7 @@ public class SampleController {
 			saveModbusTab();
 			saveAmplitudesTab();
 			saveOrdersTab();
+			saveFreqsSettingsValues();
 			settings.store();
 		}catch(Exception e){
             System.err.println(e.getMessage());
@@ -365,6 +405,21 @@ public class SampleController {
 				}
 			}
 		});
+	}
+	
+	private void saveFreqsSettingsValues() {
+		Optional<Tab> tab 
+			= tabs.stream().filter(t -> t.getText().equals(FreqsSettingsTableProcessor.TAB_FREQS_SETTINGS_VALUES_NAME)).findFirst();
+		TableView<FreqValuesRow> table = FreqsSettingsTableProcessor.getTableView(tab.get());
+		ObservableList<FreqValuesRow> rows = table.getItems();
+		FreqValuesRow row = rows.get(0);
+		String sectionName = FreqsSettingsTableProcessor.TAB_FREQS_SETTINGS_VALUES_NAME.toLowerCase();
+		Arrays.asList("f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12")
+			.stream().forEach(t -> {
+				settings.put(sectionName, t, row.getByName(t));
+			});
+		String value = freqDiv.getText() == null || freqDiv.getText().equals("") ? "1" : freqDiv.getText();
+		settings.put("freqDiv", "value", value);
 	}
 	
 	private int putRow(String sectionName, Row row, int index) {

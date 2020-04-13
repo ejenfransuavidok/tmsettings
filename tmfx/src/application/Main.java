@@ -1,6 +1,7 @@
 package application;
 
 import application.initgui.FreqTableProcessor;
+import application.initgui.FreqsSettingsTableProcessor;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -26,6 +27,7 @@ public class Main extends Application {
 			TabPane tabs = (TabPane) scene.lookup("#mainPane");
 			controller.setTabs(tabs.getTabs());
 			tabs.getTabs().stream().filter(t -> t.getText().startsWith("f")).forEach(new FreqTableProcessor()::initTab);
+			tabs.getTabs().stream().filter(t -> t.getText().equals("Frequencies")).forEach(new FreqsSettingsTableProcessor()::initTab);
 			
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setTitle("TM+");
