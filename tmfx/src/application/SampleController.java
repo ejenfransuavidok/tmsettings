@@ -142,8 +142,8 @@ public class SampleController {
 			// установка количества байт
 			sending.set(6, (byte)(sending.size() - 7));
 			int [] crc = CRC16.getCrc(sending);
-			sending.add((byte) crc [1]);
 			sending.add((byte) crc [0]);
+			sending.add((byte) crc [1]);
 			
 			//sending.stream().forEach(t->System.out.print(String.valueOf(String.format("%02x", t)) + " "));
 			
@@ -235,6 +235,7 @@ public class SampleController {
 			new Thread() {
 				@Override
 				public void run() {
+					boolean success = false;
 					try {
 						prepareData();
 						List<List<Byte>> sendings = data2ModbusSendings();
@@ -246,6 +247,7 @@ public class SampleController {
 							final double step = j;
 							Platform.runLater(() -> progress.setProgress(step / sendings.size()));
 						}
+						success = true;
 					} catch (Exception e) {
 						Platform.runLater(() -> {
 							alertError.setTitle("Ошибка при подготовке данных для записи в контроллер");
@@ -258,11 +260,13 @@ public class SampleController {
 							serialController.getSerialPort().closePort();
 						}
 					}
-					Platform.runLater(() -> {
-						goodMessage.setTitle("Все пакеты записаны");
-						goodMessage.setContentText("Все пакеты записаны");
-						goodMessage.show();
-					});
+					if (success) {
+						Platform.runLater(() -> {
+							goodMessage.setTitle("Все пакеты записаны");
+							goodMessage.setContentText("Все пакеты записаны");
+							goodMessage.show();
+						});
+					}
 				}
 			}.start();
 		} catch (Exception e) {
