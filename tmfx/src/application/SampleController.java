@@ -44,7 +44,7 @@ public class SampleController {
 	private static final Integer ROW_SIZE = 26;
 	private static final int DATA_SIZE_BYTES = 2816;
 	private static final int DATA_SIZE_REGISTERS = DATA_SIZE_BYTES >> 1;
-	private static final byte DATA_SIZE_REGISTERS_ONE_SENDING = 123;
+	private static final byte DATA_SIZE_REGISTERS_ONE_SENDING = 12;//123;
 	private static final byte DATA_SENDINGS_QUANTITY = (byte) (Math.floor(DATA_SIZE_REGISTERS / DATA_SIZE_REGISTERS_ONE_SENDING) + 1);
 	private static final int AMPLITUDES_DATA_OFFSET = 0;
 	private static final int ORDERS_DATA_OFFSET = 36;
@@ -514,7 +514,7 @@ public class SampleController {
 				break;
 			}
 			catch (InvalidData e) {
-				if (counter < 3) {
+				if (counter < 10) {
 					counter++;
 					System.out.println("Попытка " + (counter + 1));
 				} else {
