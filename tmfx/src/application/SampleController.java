@@ -514,9 +514,9 @@ public class SampleController {
 				break;
 			}
 			catch (InvalidData e) {
-				if (counter < 1) {
+				if (counter < 3) {
 					counter++;
-					System.out.println("Попытка 2");
+					System.out.println("Попытка " + (counter + 1));
 				} else {
 					throw e;
 				}
