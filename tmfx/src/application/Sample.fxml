@@ -99,6 +99,16 @@
                   </AnchorPane>
                </content>
             </Tab>
+            <Tab fx:id="others" text="Others">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="18.0" layoutY="31.0" text="Time 24V relay (*10ms):" />
+                        <TextField fx:id="dc24outputDuration" layoutX="178.0" layoutY="27.0" prefHeight="25.0" prefWidth="100.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
           <Tab fx:id="tab1" text="f1">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">

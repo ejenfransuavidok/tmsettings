@@ -14,10 +14,12 @@ public static final String AMPLITUDES_TAB_NAME = "Amplitudes";
 	
 	public void init(Tab tab, Wini settings, List<TextField> amplitudes) {
 		Section item = settings.get(tab.getText().toLowerCase());
-		amplitudes.forEach(t -> {
-			String id = t.getId(); 
-			String value = item.get(id); 
-			t.setText(value);
-		});
+		if (item != null) {
+			amplitudes.forEach(t -> {
+				String id = t.getId(); 
+				String value = item.get(id); 
+				t.setText(value);
+			});
+		}
 	}
 }

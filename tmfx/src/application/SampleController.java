@@ -17,6 +17,7 @@ import application.initgui.FreqsSettingsTableProcessor;
 import application.initgui.FreqsSettingsValuesTab;
 import application.initgui.ModbusTab;
 import application.initgui.OrdersTab;
+import application.initgui.OthersTab;
 import application.initgui.Row;
 import exceptions.InvalidData;
 import javafx.application.Platform;
@@ -44,7 +45,7 @@ public class SampleController {
 	private static final Integer ROW_SIZE = 26;
 	private static final int DATA_SIZE_BYTES = 2816;
 	private static final int DATA_SIZE_REGISTERS = DATA_SIZE_BYTES >> 1;
-	private static final byte DATA_SIZE_REGISTERS_ONE_SENDING = 12;//123;
+	private static final byte DATA_SIZE_REGISTERS_ONE_SENDING = 123;
 	private static final byte DATA_SENDINGS_QUANTITY = (byte) (Math.floor(DATA_SIZE_REGISTERS / DATA_SIZE_REGISTERS_ONE_SENDING) + 1);
 	private static final int AMPLITUDES_DATA_OFFSET = 0;
 	private static final int ORDERS_DATA_OFFSET = 36;
@@ -55,6 +56,7 @@ public class SampleController {
 	private static final int FREQS_DIVIDER = 1261;
 	private static final byte MODBUS_WRITE_FUNCTION = 16;
 	private static final byte MODBUS_BROADCAST_ADDRESS = -1;
+	private static final int MODBUS_TIME_TO_ENABLE_OF_RELAY_24V_ADDRESS = 1275;
 	private static final int MODBUS_REFRESH_FLASH_MEMORY_ADDRESS_0 = 1406;
 	private static final int MODBUS_REFRESH_FLASH_MEMORY_ADDRESS_1 = 1407;
 	private Wini settings;
@@ -62,6 +64,7 @@ public class SampleController {
 	private ModbusTab modbusTab = new ModbusTab();
 	private AmplitudesTab amplitudesTab = new AmplitudesTab();
 	private OrdersTab ordersTab = new OrdersTab();
+	private OthersTab othersTab = new OthersTab();
 	private FreqsSettingsValuesTab freqsSettingsValuesTab = new FreqsSettingsValuesTab();
 	private Stage serialSettingsStage;
 	private Short [] data = new Short [DATA_SIZE_BYTES];
@@ -87,6 +90,8 @@ public class SampleController {
 	private ProgressBar progress;
 	@FXML
 	private TextField freqDiv;
+	@FXML
+	private TextField dc24outputDuration;
 	
 	final FileChooser fileChooser = new FileChooser();
 	
@@ -113,6 +118,7 @@ public class SampleController {
 		prepareCoefficients();
 		prepareModbus();
 		prepareFreqsSettingsValues();
+		prepareOthersSettings();
 		if (rewriteEEPROM.isSelected()) {
 			data [MODBUS_REFRESH_FLASH_MEMORY_ADDRESS_0] = 0x1111;
 			data [MODBUS_REFRESH_FLASH_MEMORY_ADDRESS_1] = 0x2222;
@@ -130,6 +136,16 @@ public class SampleController {
 		}
 		String value = freqDiv.getText() == null || freqDiv.getText().equals("") ? "1" : freqDiv.getText();
 		data [FREQS_DIVIDER] = Short.valueOf(value);
+	}
+	
+	private void prepareOthersSettings() throws InvalidData {
+		short value = 1; // BY DEFAULT = 1
+		try {
+			value = Short.valueOf(dc24outputDuration.getText());
+		} catch (Exception e) {
+			throw new InvalidData("Ошибка установки времени удержания реле 24 В");
+		}
+		data [MODBUS_TIME_TO_ENABLE_OF_RELAY_24V_ADDRESS] = value;
 	}
 	
 	private List<List<Byte>> data2ModbusSendings() {
@@ -217,7 +233,7 @@ public class SampleController {
 						break;
 					}
 				}
-				if (localIndex - index >= COEFFICIENTS_DATA_SIZE) {
+				if (localIndex - index > COEFFICIENTS_DATA_SIZE) {
 					throw new InvalidData(String.format("Порядок фильтра не может превышать %d", COEFFICIENTS_DATA_SIZE));
 				}
 				index+=COEFFICIENTS_DATA_SIZE;
@@ -335,7 +351,7 @@ public class SampleController {
 	}
 	
 	private void openFile(File file) {
-		try{
+		try {
 			settings = new Wini(file);
 			for (Tab tab: tabs) {
 				Section item = settings.get(tab.getText());
@@ -354,8 +370,11 @@ public class SampleController {
 				else if (OrdersTab.ORDERS_TAB_NAME.equals(tab.getText())) {
 					ordersTab.init(tab, settings, Arrays.asList(ord1, ord2, ord3, ord4, ord5, ord6, ord7, ord8, ord9, ord10, ord11, ord12));
 				}
+				else if (OthersTab.OTHERS_TAB_NAME.equals(tab.getText())) {
+					othersTab.init(tab, settings, Arrays.asList(dc24outputDuration));
+				}
 			}
-		}catch(Exception e){
+		} catch(Exception e) {
             System.err.println(e.getMessage());
         }
     }
@@ -367,12 +386,20 @@ public class SampleController {
 			saveModbusTab();
 			saveAmplitudesTab();
 			saveOrdersTab();
+			saveOthersTab();
 			saveFreqsSettingsValues();
 			settings.store();
 		}catch(Exception e){
             System.err.println(e.getMessage());
         }
     }
+	
+	private void saveOthersTab() {
+		Arrays.asList(dc24outputDuration).forEach(t -> {
+			String id = t.getId();
+			settings.put("others", id, t.getText());
+		});
+	}
 	
 	private void saveOrdersTab() {
 		Arrays.asList(ord1, ord2, ord3, ord4, ord5, ord6, ord7, ord8, ord9, ord10, ord11, ord12).forEach(t -> {
